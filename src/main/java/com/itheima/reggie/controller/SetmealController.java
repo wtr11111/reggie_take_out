@@ -12,6 +12,7 @@ import com.itheima.reggie.entity.Setmeal;
 import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.SetmealDishService;
 import com.itheima.reggie.service.SetmealService;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/setmeal")
 @Slf4j
+@Api(tags="套餐相关接口")
 public class SetmealController {
     @Autowired
     private SetmealService setmealService;
@@ -38,6 +40,7 @@ public class SetmealController {
     @PostMapping
     //allEntries = true:清理setmeal下的所有缓存数据
     @CacheEvict(value = "setmeal",allEntries = true)
+    @ApiOperation(value="新增套餐接口")
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info("套餐信息：{}",setmealDto);
         setmealService.saveWithDish(setmealDto);
@@ -46,6 +49,12 @@ public class SetmealController {
 
     //    套餐信息分页查询
     @GetMapping("/page")
+    @ApiOperation(value="套餐信息分页查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="page",value="页码",required=true),
+            @ApiImplicitParam(name="pageSize",value="每页记录数",required=true),
+            @ApiImplicitParam(name="name",value="套餐名称",required=false),
+    })
     public R<Page> page(int page, int pageSize, String name){
 //        构造分页构造器对象
         Page<Setmeal> pageInfo=new Page<>(page,pageSize);
@@ -87,6 +96,7 @@ public class SetmealController {
     @DeleteMapping
 //    allEntries = true:清理setmeal下的所有缓存数据
     @CacheEvict(value = "setmeal",allEntries = true)
+    @ApiOperation(value="套餐删除接口")
     public R<String> delete(@RequestParam List<Long> ids){
         log.info("ids:{}",ids);
         setmealService.removeWithDish(ids);
@@ -95,6 +105,7 @@ public class SetmealController {
 
     @GetMapping("/list")
     @Cacheable(value = "setmeal",key = "#setmeal.categoryId+'_'+#setmeal.status")
+    @ApiOperation(value = "套餐条件查询接口")
     public R<List<Setmeal>> list(Setmeal setmeal){
 //        构造查询条件
         LambdaQueryWrapper<Setmeal> queryWrapper=new LambdaQueryWrapper();
