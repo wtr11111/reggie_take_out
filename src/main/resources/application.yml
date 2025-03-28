@@ -27,4 +27,5 @@ mybatis-plus:
     db-config:
       id-type: ASSIGN_ID
 reggie:
-  path: D:\JavaWeb\img\
+  path: /usr/local/img/
+#  path: D:\JavaWeb\img\
